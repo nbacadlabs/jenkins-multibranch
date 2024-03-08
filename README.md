@@ -1,2 +1,2 @@
 # jenkins-multibranch
-Test files sx
+Test files sx-xs

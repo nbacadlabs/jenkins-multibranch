@@ -1,21 +1,31 @@
 pipeline {
   agent any
   options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
+    buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')
   }
   stages {
-    stage('Build') {
+    stage('Hello') {
       steps {
-        sh './gradlew clean check --no-daemon'
+        echo "Hello"
       }
     }
-  }
-  post {
-    always {
-        junit(
-          allowEmptyResults: true, 
-          testResults: '**/build/test-results/test/*.xml'
-        )
+    stage('for the fix branch') {
+      when {
+        branch "fix-*"
+      }
+      steps {
+        sh '''
+          cat README.md
+          '''
+      }
+    }
+    stage('for the PR') {
+      when {
+        branch 'PR=*'
+      }
+      steps {
+        echo ' This only runs for the PRs'
+      }
     }
   }
 }
